@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures":
+  {
+    "up": "themod:block/top_of_ready_upper_gargoyle_mold",
+    "down": "themod:block/top_of_lower_gargoyle_mold",
+    "north": "#all",
+    "east": "#all",
+    "west": "#all",
+    "south": "#all",
+    "particle": "#all",
+
+    "all": "themod:block/gargoyle_mold_side"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures":
+  {
+    "layer0": "themod:item/bucket_of_soul_concrete_mortar"
+  }
+}

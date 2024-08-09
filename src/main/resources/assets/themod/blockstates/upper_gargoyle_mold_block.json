@@ -1,0 +1,17 @@
+{
+  "variants":
+  {
+    "mold_state=0":
+    {
+      "model": "themod:block/upper_empty_gargoyle_mold_block"
+    },
+    "mold_state=1":
+    {
+      "model": "themod:block/upper_full_gargoyle_mold_block"
+    },
+    "mold_state=2":
+    {
+      "model": "themod:block/upper_ready_gargoyle_mold_block"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "language": "Russian",
+  "language.region": "Russia",
+  "language.code": "ru_ru",
+  "author": "detrovv",
+
+  "item.themod.first": "Первый предмет",
+  "item.themod.soul": "Душа",
+  "item.themod.bucket_of_soul_concrete_mortar": "Ведро раствора бетона душ",
+  "item.themod.executioners_axe": "Топор палача",
+
+  "block.themod.lower_gargoyle_mold_block": "Нижняя часть формы горгульи",
+  "block.themod.upper_gargoyle_mold_block": "Верхняя часть формы горгульи",
+
+  "creativetab.themod_tab": "Вкладка TheMod"
+}

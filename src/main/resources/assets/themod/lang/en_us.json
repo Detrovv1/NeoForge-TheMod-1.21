@@ -1,0 +1,16 @@
+{
+  "language": "English",
+  "language.region": "United States",
+  "language.code": "en_us",
+  "author": "detrovv",
+
+  "item.themod.first": "first item",
+  "item.themod.soul": "Soul",
+  "item.themod.bucket_of_soul_concrete_mortar": "Bucket of Soul Concrete Mortar",
+  "item.themod.executioners_axe": "Executioner's Axe",
+
+  "block.themod.lower_gargoyle_mold_block": "Lower Gargoyle Mold Block",
+  "block.themod.upper_gargoyle_mold_block": "Upper Gargoyle Mold Block",
+
+  "creativetab.themod_tab": "TheMod Tab"
+}

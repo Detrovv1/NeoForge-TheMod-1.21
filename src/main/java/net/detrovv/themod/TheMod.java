@@ -1,5 +1,9 @@
 package net.detrovv.themod;
 
+import net.detrovv.themod.blockEntities.ModBlockEntities;
+import net.detrovv.themod.blocks.ModBlocks;
+import net.detrovv.themod.items.ModCreativeTabs;
+import net.detrovv.themod.items.ModItems;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -17,7 +21,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(TheMod.MOD_ID)
 public class TheMod
 {
@@ -34,6 +37,14 @@ public class TheMod
         modEventBus.addListener(this::addCreative);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        ModItems.ITEMS.register(modEventBus);
+
+        ModBlocks.BLOCKS.register(modEventBus);
+
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+
+        ModCreativeTabs.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

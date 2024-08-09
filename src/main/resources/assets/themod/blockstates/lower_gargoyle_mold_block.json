@@ -1,0 +1,9 @@
+{
+  "variants":
+  {
+    "":
+    {
+      "model": "themod:block/lower_gargoyle_mold_block"
+    }
+  }
+}
