@@ -11,6 +11,8 @@
 
   "block.themod.lower_gargoyle_mold_block": "Lower Gargoyle Mold Block",
   "block.themod.upper_gargoyle_mold_block": "Upper Gargoyle Mold Block",
+  "block.themod.soul_concrete_block": "Soul Concrete Block",
+  "block.themod.soul_concrete_powder_block": "Soul Concrete Powder Block",
 
   "creativetab.themod_tab": "TheMod Tab"
 }

@@ -2,6 +2,7 @@ package net.detrovv.themod;
 
 import net.detrovv.themod.blockEntities.ModBlockEntities;
 import net.detrovv.themod.blocks.ModBlocks;
+import net.detrovv.themod.effect.ModEffects;
 import net.detrovv.themod.items.ModCreativeTabs;
 import net.detrovv.themod.items.ModItems;
 import org.slf4j.Logger;
@@ -38,11 +39,15 @@ public class TheMod
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
-        ModItems.ITEMS.register(modEventBus);
 
-        ModBlocks.BLOCKS.register(modEventBus);
 
-        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        ModItems.register(modEventBus);
+
+        ModBlocks.register(modEventBus);
+
+        ModBlockEntities.register(modEventBus);
+
+        ModEffects.register(modEventBus);
 
         ModCreativeTabs.register(modEventBus);
     }

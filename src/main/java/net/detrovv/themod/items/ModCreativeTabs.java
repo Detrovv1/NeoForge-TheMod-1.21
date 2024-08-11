@@ -15,6 +15,11 @@ public class ModCreativeTabs
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, TheMod.MOD_ID);
 
+    public static void register(IEventBus eventBus)
+    {
+        CREATIVE_MODE_TABS.register(eventBus);
+    }
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> THEMOD_TAB = CREATIVE_MODE_TABS.register("themod_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.BUCKET_OF_SOUL_CONCRETE_MORTAR.get()))
                     .title(Component.translatable("creativetab.themod_tab"))
@@ -23,11 +28,9 @@ public class ModCreativeTabs
                         output.accept(ModItems.EXECUTIONERS_AXE.get());
                         output.accept(ModBlocks.LOWER_GARGOYLE_MOLD_BLOCK.get());
                         output.accept(ModBlocks.UPPER_GARGOYLE_MOLD_BLOCK.get());
+                        output.accept(ModBlocks.SOUL_CONCRETE_BLOCK.get());
+                        output.accept(ModBlocks.SOUL_CONCRETE_POWDER_BLOCK.get());
+
                     })
                     .build());
-
-    public static void register(IEventBus eventBus)
-    {
-        CREATIVE_MODE_TABS.register(eventBus);
-    }
 }

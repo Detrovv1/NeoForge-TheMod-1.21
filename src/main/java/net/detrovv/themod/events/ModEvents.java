@@ -1,25 +1,28 @@
 package net.detrovv.themod.events;
 
 import net.detrovv.themod.TheMod;
+import net.detrovv.themod.effect.ModEffects;
 import net.detrovv.themod.items.ModItems;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -75,5 +78,30 @@ public class ModEvents
             }, 50, TimeUnit.MICROSECONDS);
         }
     }
+
+    @SubscribeEvent
+    public static void DisguiseEffectProtection(LivingChangeTargetEvent event)
+    {
+        LivingEntity livingEntity = event.getEntity();
+        HolderSet<EntityType<?>> illagers = BuiltInRegistries.ENTITY_TYPE.getOrCreateTag(EntityTypeTags.ILLAGER);
+        if (livingEntity.getType().is(illagers))
+        {
+            Mob mob = (Mob)livingEntity;
+            if (event.getNewAboutToBeSetTarget() instanceof Player)
+            {
+                Player player = (Player)event.getNewAboutToBeSetTarget();
+                if (player.hasEffect(ModEffects.DISGUISE))
+                {
+                    if (mob instanceof Evoker)
+                    {
+                        MobEffectInstance slowness_effect = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 7, false, false);
+                        mob.addEffect(slowness_effect);
+                    }
+                    event.setCanceled(true);
+                }
+            }
+        }
+    }
+
 }
 

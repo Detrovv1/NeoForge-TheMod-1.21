@@ -1,6 +1,5 @@
 package net.detrovv.themod.blocks.custom;
 
-import net.detrovv.themod.blockEntities.ModBlockEntities;
 import net.detrovv.themod.blockEntities.UpperGargoyleMoldBlockEntity;
 import net.detrovv.themod.blocks.ModBlocks;
 import net.detrovv.themod.items.ModItems;

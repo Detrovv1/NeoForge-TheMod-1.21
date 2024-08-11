@@ -11,6 +11,8 @@
 
   "block.themod.lower_gargoyle_mold_block": "Нижняя часть формы горгульи",
   "block.themod.upper_gargoyle_mold_block": "Верхняя часть формы горгульи",
+  "block.themod.soul_concrete_block": "Бетон душ",
+  "block.themod.soul_concrete_powder_block": "Цемент бетона душ",
 
   "creativetab.themod_tab": "Вкладка TheMod"
 }
