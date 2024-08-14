@@ -30,6 +30,8 @@ public class ModCreativeTabs
                         output.accept(ModBlocks.UPPER_GARGOYLE_MOLD_BLOCK.get());
                         output.accept(ModBlocks.SOUL_CONCRETE_BLOCK.get());
                         output.accept(ModBlocks.SOUL_CONCRETE_POWDER_BLOCK.get());
+                        output.accept(ModBlocks.BASE_SOUL_STORAGE_BLOCK.get());
+                        output.accept(ModBlocks.SOUL_ALTAR_BLOCK.get());
 
                     })
                     .build());

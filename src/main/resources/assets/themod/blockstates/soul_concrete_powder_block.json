@@ -1,0 +1,9 @@
+{
+  "variants":
+  {
+    "":
+    {
+      "model": "themod:block/soul_concrete_powder_block"
+    }
+  }
+}

@@ -42,7 +42,8 @@ public class UpperGargoyleMoldBlock extends Block implements EntityBlock
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pType)
+    {
         return pLevel.isClientSide() ? null : (level0, pos0, state0, blockEntity) -> ((UpperGargoyleMoldBlockEntity)blockEntity).tick();
     }
 
@@ -131,9 +132,9 @@ public class UpperGargoyleMoldBlock extends Block implements EntityBlock
         }
     }
 
-
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+    {
         return new UpperGargoyleMoldBlockEntity(pos, state);
     }
 }

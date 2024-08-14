@@ -1,5 +1,6 @@
 package net.detrovv.themod;
 
+import net.detrovv.themod.ModAttachments.ModAttachments;
 import net.detrovv.themod.blockEntities.ModBlockEntities;
 import net.detrovv.themod.blocks.ModBlocks;
 import net.detrovv.themod.effect.ModEffects;
@@ -50,6 +51,8 @@ public class TheMod
         ModEffects.register(modEventBus);
 
         ModCreativeTabs.register(modEventBus);
+
+        ModAttachments.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

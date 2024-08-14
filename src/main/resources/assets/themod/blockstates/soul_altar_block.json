@@ -1,0 +1,6 @@
+{
+  "variants":
+  {
+    "": { "model": "themod:block/soul_altar_block" }
+  }
+}

@@ -1,8 +1,14 @@
 package net.detrovv.themod.events;
 
 import net.detrovv.themod.TheMod;
+import net.detrovv.themod.blockEntities.SoulAltarBlockEntity;
+import net.detrovv.themod.blocks.ModBlocks;
 import net.detrovv.themod.effect.ModEffects;
 import net.detrovv.themod.items.ModItems;
+import net.detrovv.themod.souls.MobToSoulTranslator;
+import net.detrovv.themod.souls.Soul;
+import net.detrovv.themod.souls.SoulData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -31,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class ModEvents
 {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     @SubscribeEvent()
     public static void OnKillingMobWithExecutionersAxe(LivingDeathEvent event)
     {
@@ -103,5 +110,39 @@ public class ModEvents
         }
     }
 
+    @SubscribeEvent
+    public static void TryToCatchSoul(LivingDeathEvent event)
+    {
+        LivingEntity mob = event.getEntity();
+        BlockPos mobPosition = mob.getOnPos();
+        Level level = event.getEntity().level();
+
+        int thisX = mobPosition.getX();
+        int thisY = mobPosition.getY() + 1;
+        int thisZ = mobPosition.getZ();
+        int range = 5;
+
+        for (int x = thisX - range; x <= thisX + range; x++)
+        {
+            for (int y = thisY - range; y <= thisY + range; y++)
+            {
+                for (int z = thisZ - range; z <= thisZ + range; z++)
+                {
+                    BlockPos currentPosition = new BlockPos(x, y, z);
+                    if (level.getBlockState(currentPosition).getBlock() == ModBlocks.SOUL_ALTAR_BLOCK.get())
+                    {
+                        SoulAltarBlockEntity altar = (SoulAltarBlockEntity)level.getBlockEntity(currentPosition);
+                        if (altar.HasEmptySoulStorageNearby())
+                        {
+                            MobToSoulTranslator translator = new MobToSoulTranslator();
+                            SoulData soulData = translator.translate(mob.getType());
+                            Soul soul = new Soul(soulData);
+                            altar.StoreSoulInStorageNearby(soul);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 

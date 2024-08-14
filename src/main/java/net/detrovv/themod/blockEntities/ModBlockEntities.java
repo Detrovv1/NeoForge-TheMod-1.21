@@ -17,6 +17,14 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("upper_gargoyle_mold_block_entity", () -> BlockEntityType.Builder.of(
                     UpperGargoyleMoldBlockEntity::new, ModBlocks.UPPER_GARGOYLE_MOLD_BLOCK.get()).build(null));
 
+    public static final Supplier<BlockEntityType<BaseSoulStorageBlockEntity>> BASE_SOUL_STORAGE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("base_soul_storage_block_entity", () -> BlockEntityType.Builder.of(
+                    BaseSoulStorageBlockEntity::new, ModBlocks.BASE_SOUL_STORAGE_BLOCK.get()).build(null));
+
+    public static final Supplier<BlockEntityType<SoulAltarBlockEntity>> SOUL_ALTAR_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("soul_altar_block_entity", () -> BlockEntityType.Builder.of(
+                    SoulAltarBlockEntity::new, ModBlocks.SOUL_ALTAR_BLOCK.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

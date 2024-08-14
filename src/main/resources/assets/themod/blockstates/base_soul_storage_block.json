@@ -1,0 +1,6 @@
+{
+  "variants":
+  {
+    "": { "model": "themod:block/base_soul_storage_block" }
+  }
+}
