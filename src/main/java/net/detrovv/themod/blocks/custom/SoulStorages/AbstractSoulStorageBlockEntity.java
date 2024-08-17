@@ -1,33 +1,47 @@
 package net.detrovv.themod.blocks.custom.SoulStorages;
 
 import net.detrovv.themod.ModAttachments.ModAttachments;
+import net.detrovv.themod.gui.SoulStorageMenu;
 import net.detrovv.themod.souls.Soul;
 import net.detrovv.themod.souls.SoulOrigins;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
+public abstract class AbstractSoulStorageBlockEntity extends BlockEntity implements MenuProvider
 {
     protected final int capacity;
-    protected final int maxUses;
-    protected int usesCount = 0;
+    protected List<Soul> storedSouls = new ArrayList<Soul>();
+    protected ItemStack remoteSoulStorage = ItemStack.EMPTY;
 
-    public AbstractSoulStorageBlockEntity(int pMaxUses, int pCapacity, BlockEntityType<?> type, BlockPos pos, BlockState state)
+    public AbstractSoulStorageBlockEntity(int pCapacity, BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
-        maxUses = pMaxUses;
         capacity = pCapacity;
     }
 
     public boolean HasFreeSpaceForSoul()
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         if (storedSouls.size() < capacity)
         {
             return true;
@@ -37,11 +51,9 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
 
     public boolean AddSoul(Soul soul)
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         if (HasFreeSpaceForSoul())
         {
             storedSouls.add(soul);
-            this.setData(ModAttachments.STORED_SOULS, storedSouls);
             return true;
         }
         return false;
@@ -49,14 +61,11 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
 
     public void RemoveSoul(Soul soul)
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         for (int i = 0; i < capacity; i++)
         {
             if (storedSouls.get(i) == soul)
             {
                 storedSouls.remove(i);
-                usesCount++;
-                this.setChanged();
                 return;
             }
         }
@@ -64,7 +73,6 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
 
     public boolean ContainsSoul(Soul soul)
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         if (storedSouls.contains(soul))
         {
             return true;
@@ -74,7 +82,6 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
 
     public boolean HasSoulOfType(SoulOrigins origin, int power)
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         for (int i = 0; i < capacity; i++)
         {
             Soul currentSoul = storedSouls.get(i);
@@ -89,7 +96,6 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
 
     public boolean HasSoulOfType(SoulOrigins origin)
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         for (int i = 0; i < capacity; i++)
         {
             Soul currentSoul = storedSouls.get(i);
@@ -103,7 +109,6 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
 
     public boolean HasSoulOfType(int power)
     {
-        List<Soul> storedSouls = this.getData(ModAttachments.STORED_SOULS);
         for (int i = 0; i < capacity; i++)
         {
             Soul currentSoul = storedSouls.get(i);
@@ -115,15 +120,55 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity
         return false;
     }
 
-    @Override
-    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider p_327783_) {
-        super.saveAdditional(nbt, p_327783_);
-        nbt.putInt("uses_count", usesCount);
+    public List<Soul> getSouls()
+    {
+        return storedSouls;
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider p_333170_) {
-        super.loadAdditional(nbt, p_333170_);
-        usesCount = nbt.getInt("uses_count");
+    public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player)
+    {
+        return new SoulStorageMenu(id, inventory, player, this, new ItemStackHandler(1));
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable("soul_storage");
+    }
+
+    public void setRemoteSoulStorage(ItemStack remoteSoulStorage)
+    {
+        this.remoteSoulStorage = remoteSoulStorage;
+    }
+
+    public ItemStack getRemoteSoulStorage()
+    {
+        return remoteSoulStorage;
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider registries)
+    {
+        super.loadAdditional(compoundTag, registries);
+        ListTag listTag = compoundTag.getList("storedSouls", 10);
+        storedSouls.clear();
+        for(int i = 0; i < listTag.size(); i++)
+        {
+            Soul soul = new Soul();
+            soul.deserializeNBT(registries, listTag.get(i));
+            storedSouls.add(soul);
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider registries)
+    {
+        super.saveAdditional(compoundTag, registries);
+        ListTag listTag = new ListTag();
+        for (Soul soul : storedSouls)
+        {
+            listTag.add(soul.serializeNBT(registries));
+        }
+        compoundTag.put("storedSouls", listTag);
     }
 }

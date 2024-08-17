@@ -4,8 +4,11 @@ import net.detrovv.themod.ModAttachments.ModAttachments;
 import net.detrovv.themod.blockEntities.ModBlockEntities;
 import net.detrovv.themod.blocks.ModBlocks;
 import net.detrovv.themod.effect.ModEffects;
+import net.detrovv.themod.gui.ModMenus;
 import net.detrovv.themod.items.ModCreativeTabs;
 import net.detrovv.themod.items.ModItems;
+import net.detrovv.themod.screen.SoulStorageScreen;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -17,7 +20,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -53,6 +55,8 @@ public class TheMod
         ModCreativeTabs.register(modEventBus);
 
         ModAttachments.register(modEventBus);
+
+        ModMenus.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -75,9 +79,8 @@ public class TheMod
     public static class ClientModEvents
     {
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-
+        public static void onClientSetup(RegisterMenuScreensEvent event) {
+            event.register(ModMenus.SOUL_STORAGE_MENU.get(), SoulStorageScreen::new);
         }
     }
 }

@@ -7,6 +7,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BaseSoulStorageBlockEntity extends AbstractSoulStorageBlockEntity
 {
     public BaseSoulStorageBlockEntity(BlockPos pos, BlockState state) {
-        super(5, 1, ModBlockEntities.BASE_SOUL_STORAGE_BLOCK_ENTITY.get(), pos, state);
+        super(1, ModBlockEntities.BASE_SOUL_STORAGE_BLOCK_ENTITY.get(), pos, state);
     }
 }

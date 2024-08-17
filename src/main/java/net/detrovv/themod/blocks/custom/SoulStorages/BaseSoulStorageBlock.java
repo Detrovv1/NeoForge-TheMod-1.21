@@ -2,8 +2,10 @@ package net.detrovv.themod.blocks.custom.SoulStorages;
 
 import net.detrovv.themod.ModAttachments.ModAttachments;
 import net.detrovv.themod.blockEntities.BaseSoulStorageBlockEntity;
+import net.detrovv.themod.souls.Soul;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -38,12 +40,15 @@ public class BaseSoulStorageBlock extends Block implements EntityBlock
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        BaseSoulStorageBlockEntity blockEntity = (BaseSoulStorageBlockEntity)level.getBlockEntity(pos);
-        player.sendSystemMessage(Component.literal(blockEntity.capacity + ""));
-        player.sendSystemMessage(Component.literal(blockEntity.maxUses + ""));
-        player.sendSystemMessage(Component.literal(blockEntity.usesCount + ""));
-        player.sendSystemMessage(Component.literal(blockEntity.HasFreeSpaceForSoul() + ""));
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            BlockEntity entity = level.getBlockEntity(pos);
+            AbstractSoulStorageBlockEntity storage = (AbstractSoulStorageBlockEntity)entity;
+            Soul soul = storage.getSouls().get(0);
+            player.sendSystemMessage(Component.literal(soul.GetOrigin().toString() + " " + soul.GetPower()));
+            storage.RemoveSoul(soul);
+            serverPlayer.openMenu(storage, pos);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
@@ -51,6 +56,4 @@ public class BaseSoulStorageBlock extends Block implements EntityBlock
     {
         return new BaseSoulStorageBlockEntity(pos, state);
     }
-
-
 }

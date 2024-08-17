@@ -13,6 +13,12 @@
   "block.themod.upper_gargoyle_mold_block": "Upper Gargoyle Mold Block",
   "block.themod.soul_concrete_block": "Soul Concrete Block",
   "block.themod.soul_concrete_powder_block": "Soul Concrete Powder Block",
+  "block.themod.soul_altar_block": "Soul Altar",
+  "block.themod.base_soul_storage_block": "Base Soul Storage",
+
+  "soul_storage": "Soul Storage",
+  "gui.themod.soul_storage_screen_insert_button": "Insert",
+  "gui.themod.soul_storage_screen_extract_button": "Extract",
 
   "creativetab.themod_tab": "TheMod Tab"
 }

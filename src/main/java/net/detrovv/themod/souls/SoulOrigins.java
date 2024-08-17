@@ -1,5 +1,7 @@
 package net.detrovv.themod.souls;
 
+import com.mojang.serialization.Codec;
+
 public enum SoulOrigins
 {
     Undead,
@@ -9,5 +11,7 @@ public enum SoulOrigins
     Sentient,
     Monstrous,
     Infernal,
-    End
+    End;
+
+    public static final Codec<SoulOrigins> CODEC = Codec.STRING.xmap(SoulOrigins::valueOf, SoulOrigins::name);
 }
