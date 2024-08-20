@@ -1,46 +1,56 @@
 package net.detrovv.themod.blocks.custom.SoulStorages;
 
-import net.detrovv.themod.ModAttachments.ModAttachments;
 import net.detrovv.themod.gui.SoulStorageMenu;
 import net.detrovv.themod.souls.Soul;
 import net.detrovv.themod.souls.SoulOrigins;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class AbstractSoulStorageBlockEntity extends BlockEntity implements MenuProvider
 {
     protected final int capacity;
     protected List<Soul> storedSouls = new ArrayList<Soul>();
-    protected ItemStack remoteSoulStorage = ItemStack.EMPTY;
+    protected ItemStackHandler remoteSoulStorage = new ItemStackHandler(1);
 
-    public AbstractSoulStorageBlockEntity(int pCapacity, BlockEntityType<?> type, BlockPos pos, BlockState state)
+    public AbstractSoulStorageBlockEntity(int capacity, BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state);
-        capacity = pCapacity;
+        this.capacity = capacity;
     }
 
-    public boolean HasFreeSpaceForSoul()
+    public boolean addSoul(Soul soul)
+    {
+        if (!level.isClientSide() && hasFreeSpaceForSoul())
+        {
+            storedSouls.add(soul);
+            getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 2);
+            setChanged();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasFreeSpaceForSoul()
     {
         if (storedSouls.size() < capacity)
         {
@@ -49,29 +59,17 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
         return false;
     }
 
-    public boolean AddSoul(Soul soul)
+    public void removeSoul(Soul soul)
     {
-        if (HasFreeSpaceForSoul())
+        if (!level.isClientSide() && storedSouls.contains(soul))
         {
-            storedSouls.add(soul);
-            return true;
-        }
-        return false;
-    }
-
-    public void RemoveSoul(Soul soul)
-    {
-        for (int i = 0; i < capacity; i++)
-        {
-            if (storedSouls.get(i) == soul)
-            {
-                storedSouls.remove(i);
-                return;
-            }
+            storedSouls.remove(soul);
+            level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 2);
+            setChanged();
         }
     }
 
-    public boolean ContainsSoul(Soul soul)
+    public boolean containsSoul(Soul soul)
     {
         if (storedSouls.contains(soul))
         {
@@ -80,13 +78,11 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
         return false;
     }
 
-    public boolean HasSoulOfType(SoulOrigins origin, int power)
+    public boolean hasSoulOfType(SoulOrigins origin, int power)
     {
-        for (int i = 0; i < capacity; i++)
+        for (Soul soul : storedSouls)
         {
-            Soul currentSoul = storedSouls.get(i);
-            if (currentSoul.GetOrigin() == origin &&
-                    currentSoul.GetPower() >= power)
+            if (soul.getPower() >= power && soul.getOrigin() == origin)
             {
                 return true;
             }
@@ -94,12 +90,11 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
         return false;
     }
 
-    public boolean HasSoulOfType(SoulOrigins origin)
+    public boolean hasSoulOfType(SoulOrigins origin)
     {
-        for (int i = 0; i < capacity; i++)
+        for (Soul soul : storedSouls)
         {
-            Soul currentSoul = storedSouls.get(i);
-            if (currentSoul.GetOrigin() == origin)
+            if (soul.getOrigin() == origin)
             {
                 return true;
             }
@@ -107,12 +102,11 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
         return false;
     }
 
-    public boolean HasSoulOfType(int power)
+    public boolean hasSoulOfType(int power)
     {
-        for (int i = 0; i < capacity; i++)
+        for (Soul soul : storedSouls)
         {
-            Soul currentSoul = storedSouls.get(i);
-            if (currentSoul.GetPower() >= power)
+            if (soul.getPower() >= power)
             {
                 return true;
             }
@@ -128,7 +122,7 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, Inventory inventory, Player player)
     {
-        return new SoulStorageMenu(id, inventory, player, this, new ItemStackHandler(1));
+        return new SoulStorageMenu(id, inventory, this, remoteSoulStorage);
     }
 
     @Override
@@ -138,10 +132,15 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
 
     public void setRemoteSoulStorage(ItemStack remoteSoulStorage)
     {
-        this.remoteSoulStorage = remoteSoulStorage;
+        if (!level.isClientSide())
+        {
+            this.remoteSoulStorage.insertItem(0, remoteSoulStorage, true);
+            getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 2);
+            setChanged();
+        }
     }
 
-    public ItemStack getRemoteSoulStorage()
+    public ItemStackHandler getRemoteSoulStorage()
     {
         return remoteSoulStorage;
     }
@@ -150,25 +149,63 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider registries)
     {
         super.loadAdditional(compoundTag, registries);
+
         ListTag listTag = compoundTag.getList("storedSouls", 10);
         storedSouls.clear();
+
         for(int i = 0; i < listTag.size(); i++)
         {
             Soul soul = new Soul();
             soul.deserializeNBT(registries, listTag.get(i));
             storedSouls.add(soul);
         }
+
+        CompoundTag itemTag = compoundTag.getCompound("remoteSoulStorage");
+        remoteSoulStorage.deserializeNBT(registries, itemTag);
     }
 
     @Override
     protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider registries)
     {
         super.saveAdditional(compoundTag, registries);
+
         ListTag listTag = new ListTag();
         for (Soul soul : storedSouls)
         {
             listTag.add(soul.serializeNBT(registries));
         }
         compoundTag.put("storedSouls", listTag);
+
+
+        CompoundTag itemTag = remoteSoulStorage.serializeNBT(registries);
+        compoundTag.put("remoteSoulStorage", itemTag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries)
+    {
+        CompoundTag compoundTag = new CompoundTag();
+        ListTag listTag = new ListTag();
+
+        for (Soul soul : storedSouls)
+        {
+            listTag.add(soul.serializeNBT(registries));
+        }
+
+        compoundTag.put("storedSouls", listTag);
+        return compoundTag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket()
+    {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider)
+    {
+        super.onDataPacket(net, pkt, lookupProvider);
+        this.loadAdditional(pkt.getTag(), lookupProvider);
     }
 }

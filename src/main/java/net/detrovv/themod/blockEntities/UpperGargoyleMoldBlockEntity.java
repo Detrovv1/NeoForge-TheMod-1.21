@@ -26,13 +26,16 @@ public class UpperGargoyleMoldBlockEntity extends BlockEntity
 
     public void AddMortar()
     {
-        if(this.mortar_level < 2)
+        if (!level.isClientSide())
         {
-            this.mortar_level++;
-            this.setChanged();
+            if (this.mortar_level < 2)
+            {
+                this.mortar_level++;
+                this.setChanged();
+            }
         }
     }
-//
+
     public int GetMortarLevel()
     {
         return mortar_level;

@@ -43,9 +43,6 @@ public class BaseSoulStorageBlock extends Block implements EntityBlock
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             BlockEntity entity = level.getBlockEntity(pos);
             AbstractSoulStorageBlockEntity storage = (AbstractSoulStorageBlockEntity)entity;
-            Soul soul = storage.getSouls().get(0);
-            player.sendSystemMessage(Component.literal(soul.GetOrigin().toString() + " " + soul.GetPower()));
-            storage.RemoveSoul(soul);
             serverPlayer.openMenu(storage, pos);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

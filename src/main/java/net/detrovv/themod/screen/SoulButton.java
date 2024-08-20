@@ -11,7 +11,7 @@ public class SoulButton extends Button
     public SoulButton(int x, int y, int width, int height, Component message, OnPress onPress, Soul soul)
     {
         super(x, y, width, height, message, onPress,
-                (button) -> Component.translatable("narration.soulbutton",soul.GetOrigin().toString() + " " + soul.GetPower()));
+                (button) -> Component.translatable("narration.soulbutton",soul.getOrigin().toString() + " " + soul.getPower()));
         this.soul = soul;
     }
 }

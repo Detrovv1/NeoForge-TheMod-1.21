@@ -2,13 +2,11 @@ package net.detrovv.themod.blockEntities;
 
 import net.detrovv.themod.blocks.ModBlocks;
 import net.detrovv.themod.blocks.custom.SoulStorages.AbstractSoulStorageBlockEntity;
-import net.detrovv.themod.blocks.custom.SoulStorages.BaseSoulStorageBlock;
 import net.detrovv.themod.souls.Soul;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -25,15 +23,18 @@ public class SoulAltarBlockEntity extends BlockEntity
     public void StoreSoulInStorageNearby(Soul soul)
     {
         Level level = getLevel();
-
-        List<BlockPos> soulStoragesNearby = GetSoulStoragesNearby();
-
-        for (BlockPos blockPos : soulStoragesNearby)
+        if (!level.isClientSide())
         {
-            AbstractSoulStorageBlockEntity storageBlockEntity = (AbstractSoulStorageBlockEntity)level.getBlockEntity(blockPos);
-            if (storageBlockEntity.HasFreeSpaceForSoul())
+            List<BlockPos> soulStoragesNearby = GetSoulStoragesNearby();
+
+            for (BlockPos blockPos : soulStoragesNearby)
             {
-                storageBlockEntity.AddSoul(soul);
+                AbstractSoulStorageBlockEntity storageBlockEntity = (AbstractSoulStorageBlockEntity)level.getBlockEntity(blockPos);
+                if (storageBlockEntity.hasFreeSpaceForSoul())
+                {
+                    storageBlockEntity.addSoul(soul);
+                    return;
+                }
             }
         }
     }
@@ -47,7 +48,7 @@ public class SoulAltarBlockEntity extends BlockEntity
         for (BlockPos blockPos : soulStoragesNearby)
         {
             AbstractSoulStorageBlockEntity storageBlockEntity = (AbstractSoulStorageBlockEntity)level.getBlockEntity(blockPos);
-            if (storageBlockEntity.HasFreeSpaceForSoul())
+            if (storageBlockEntity.hasFreeSpaceForSoul())
             {
                 return true;
             }

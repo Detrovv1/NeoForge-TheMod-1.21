@@ -29,12 +29,12 @@ public class Soul implements INBTSerializable
         soulPower = pSoulPower;
     }
 
-    public int GetPower()
+    public int getPower()
     {
         return soulPower;
     }
 
-    public SoulOrigins GetOrigin()
+    public SoulOrigins getOrigin()
     {
         return origin;
     }

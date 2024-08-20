@@ -1,44 +1,36 @@
 package net.detrovv.themod.gui;
 
-import net.detrovv.themod.ModAttachments.ModAttachments;
 import net.detrovv.themod.blocks.custom.SoulStorages.AbstractSoulStorageBlockEntity;
-import net.minecraft.client.gui.layouts.EqualSpacingLayout;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.plaf.ScrollBarUI;
-import java.awt.*;
 
 public class SoulStorageMenu extends AbstractContainerMenu
 {
     public final Player player;
-    public final AbstractSoulStorageBlockEntity storage;
-    public Slot remoteStorageSlot;
+    public final AbstractSoulStorageBlockEntity blockEntity;
+    public final Slot remoteSoulStorageSlot;
 
     public SoulStorageMenu(int id, Inventory inventory, RegistryFriendlyByteBuf extraData)
     {
-        this(id, inventory, inventory.player,
-                inventory.player.level().getBlockEntity(extraData.readBlockPos()), new ItemStackHandler(1));
+        this(   id,
+                inventory,
+                (AbstractSoulStorageBlockEntity)inventory.player.level().getBlockEntity(extraData.readBlockPos()),
+                new ItemStackHandler(1));
     }
 
-    public SoulStorageMenu(int id, Inventory playerInventory, Player player, BlockEntity blockEntity, IItemHandler data)
+    public SoulStorageMenu(int id, Inventory playerInventory, AbstractSoulStorageBlockEntity blockEntity, IItemHandler data)
     {
         super(ModMenus.SOUL_STORAGE_MENU.get(), id);
 
-        this.player = player;
-        this.storage = (AbstractSoulStorageBlockEntity)blockEntity;
-
-        remoteStorageSlot = this.addSlot(new SlotItemHandler(data, 0, 131, 18));
-        this.remoteStorageSlot.set(this.storage.getRemoteSoulStorage());
+        this.player = playerInventory.player;
+        this.blockEntity = blockEntity;
+        this.remoteSoulStorageSlot = this.addSlot(new SlotItemHandler(data, 0, 131, 18));
 
         addInventorySlots(playerInventory);
         addHotbarSlots(playerInventory);

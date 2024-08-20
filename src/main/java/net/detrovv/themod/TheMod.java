@@ -7,8 +7,10 @@ import net.detrovv.themod.effect.ModEffects;
 import net.detrovv.themod.gui.ModMenus;
 import net.detrovv.themod.items.ModCreativeTabs;
 import net.detrovv.themod.items.ModItems;
+import net.detrovv.themod.network.PacketHandler;
 import net.detrovv.themod.screen.SoulStorageScreen;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -30,7 +32,7 @@ public class TheMod
 {
     public static final String MOD_ID = "themod";
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public TheMod(IEventBus modEventBus, ModContainer modContainer)
     {
@@ -81,6 +83,10 @@ public class TheMod
         @SubscribeEvent
         public static void onClientSetup(RegisterMenuScreensEvent event) {
             event.register(ModMenus.SOUL_STORAGE_MENU.get(), SoulStorageScreen::new);
+        }
+        @SubscribeEvent
+        public static void packetHandlerRegistration(RegisterPayloadHandlersEvent event) {
+           PacketHandler.register(event);
         }
     }
 }
