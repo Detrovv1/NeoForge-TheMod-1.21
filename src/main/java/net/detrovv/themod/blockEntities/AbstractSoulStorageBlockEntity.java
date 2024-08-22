@@ -1,5 +1,6 @@
-package net.detrovv.themod.blocks.custom.SoulStorages;
+package net.detrovv.themod.blockEntities;
 
+import net.detrovv.themod.blocks.custom.SoulReciever;
 import net.detrovv.themod.gui.SoulStorageMenu;
 import net.detrovv.themod.souls.Soul;
 import net.detrovv.themod.souls.SoulOrigins;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSoulStorageBlockEntity extends BlockEntity implements MenuProvider
+public abstract class AbstractSoulStorageBlockEntity extends BlockEntity implements MenuProvider, SoulReciever
 {
     protected final int capacity;
     protected List<Soul> storedSouls = new ArrayList<Soul>();

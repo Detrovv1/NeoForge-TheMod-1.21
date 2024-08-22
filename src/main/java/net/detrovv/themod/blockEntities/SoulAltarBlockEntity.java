@@ -1,7 +1,6 @@
 package net.detrovv.themod.blockEntities;
 
 import net.detrovv.themod.blocks.ModBlocks;
-import net.detrovv.themod.blocks.custom.SoulStorages.AbstractSoulStorageBlockEntity;
 import net.detrovv.themod.souls.Soul;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

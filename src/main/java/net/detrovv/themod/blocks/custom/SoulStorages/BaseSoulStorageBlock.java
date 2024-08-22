@@ -1,10 +1,8 @@
 package net.detrovv.themod.blocks.custom.SoulStorages;
 
-import net.detrovv.themod.ModAttachments.ModAttachments;
+import net.detrovv.themod.blockEntities.AbstractSoulStorageBlockEntity;
 import net.detrovv.themod.blockEntities.BaseSoulStorageBlockEntity;
-import net.detrovv.themod.souls.Soul;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;

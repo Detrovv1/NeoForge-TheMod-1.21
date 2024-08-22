@@ -1,6 +1,6 @@
 package net.detrovv.themod.gui;
 
-import net.detrovv.themod.blocks.custom.SoulStorages.AbstractSoulStorageBlockEntity;
+import net.detrovv.themod.blockEntities.AbstractSoulStorageBlockEntity;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +27,7 @@ public class SoulStorageMenu extends AbstractContainerMenu
     public SoulStorageMenu(int id, Inventory playerInventory, AbstractSoulStorageBlockEntity blockEntity, IItemHandler data)
     {
         super(ModMenus.SOUL_STORAGE_MENU.get(), id);
+
 
         this.player = playerInventory.player;
         this.blockEntity = blockEntity;

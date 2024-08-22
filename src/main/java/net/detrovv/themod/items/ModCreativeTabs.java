@@ -32,6 +32,7 @@ public class ModCreativeTabs
                         output.accept(ModBlocks.SOUL_CONCRETE_POWDER_BLOCK.get());
                         output.accept(ModBlocks.BASE_SOUL_STORAGE_BLOCK.get());
                         output.accept(ModBlocks.SOUL_ALTAR_BLOCK.get());
+                        output.accept(ModBlocks.SOUL_TUBE.get());
 
                     })
                     .build());

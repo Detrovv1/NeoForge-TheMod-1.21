@@ -157,4 +157,10 @@ public class SoulStorageScreen extends AbstractContainerScreen<SoulStorageMenu>
         guiGraphics.blit(GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
         RenderSystem.disableBlend();
     }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        menu.blockEntity.setChanged();
+    }
 }

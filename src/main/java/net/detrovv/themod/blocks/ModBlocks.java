@@ -4,6 +4,7 @@ import net.detrovv.themod.TheMod;
 import net.detrovv.themod.blocks.custom.SoulAltar;
 import net.detrovv.themod.blocks.custom.SoulStorages.BaseSoulStorageBlock;
 import net.detrovv.themod.blocks.custom.LowerGargoyleMoldBlock;
+import net.detrovv.themod.blocks.custom.SoulTube;
 import net.detrovv.themod.blocks.custom.UpperGargoyleMoldBlock;
 import net.detrovv.themod.items.ModItems;
 import net.minecraft.world.item.BlockItem;
@@ -40,10 +41,14 @@ public class ModBlocks
             registerBlock("soul_concrete_powder_block", () -> new ConcretePowderBlock(SOUL_CONCRETE_BLOCK.get() ,Blocks.BLACK_CONCRETE_POWDER.properties()));
 
     public static final DeferredBlock<Block> BASE_SOUL_STORAGE_BLOCK =
-            registerBlock("base_soul_storage_block", () -> new BaseSoulStorageBlock(Blocks.DEEPSLATE.properties()));
+            registerBlock("base_soul_storage_block", () -> new BaseSoulStorageBlock(Blocks.DEEPSLATE.properties().noOcclusion()));
 
     public static final DeferredBlock<Block> SOUL_ALTAR_BLOCK =
             registerBlock("soul_altar_block", () -> new SoulAltar(Blocks.DEEPSLATE.properties()));
+
+    public static final DeferredBlock<Block> SOUL_TUBE =
+            registerBlock("soul_tube", () -> new SoulTube(Blocks.COPPER_BLOCK.properties()));
+
 
     public static final DeferredBlock<Block> registerBlock(String name, Supplier<Block> block)
     {

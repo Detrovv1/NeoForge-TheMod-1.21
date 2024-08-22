@@ -1,0 +1,161 @@
+{
+  "multipart":
+  [
+    {
+      "when": {"facing": "north"},
+      "apply": {"model": "themod:block/soul_tube"}
+    },
+    {
+      "when": {"facing": "south"},
+      "apply": {"model": "themod:block/soul_tube", "y": 180}
+    },
+    {
+      "when": {"facing": "west"},
+      "apply": {"model": "themod:block/soul_tube", "y": 270}
+    },
+    {
+      "when": {"facing": "east"},
+      "apply": {"model": "themod:block/soul_tube", "y": 90}
+    },
+    {
+      "when": {"facing": "up"},
+      "apply": {"model": "themod:block/soul_tube", "x": 270}
+    },
+    {
+      "when": {"facing": "down"},
+      "apply": {"model": "themod:block/soul_tube", "x": 90}
+    },
+
+
+    {
+      "when": {"up_tube": "true", "facing": "south"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 270}
+    },
+    {
+      "when": {"up_tube": "true", "facing": "east"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 270}
+    },
+    {
+      "when": {"up_tube": "true", "facing": "west"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 270}
+    },
+    {
+      "when": {"up_tube": "true", "facing": "north"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 270}
+    },
+    {
+      "when": {"up_tube": "true", "facing": "down"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 270}
+    },
+
+
+    {
+      "when": {"down_tube": "true", "facing": "up"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 90}
+    },
+    {
+      "when": {"down_tube": "true", "facing": "south"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 90}
+    },
+    {
+      "when": {"down_tube": "true", "facing": "north"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 90}
+    },
+    {
+      "when": {"down_tube": "true", "facing": "east"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 90}
+    },
+    {
+      "when": {"down_tube": "true", "facing": "west"},
+      "apply": {"model": "themod:block/soul_tube_addition", "x": 90}
+    },
+
+
+    {
+      "when": {"north_tube": "true", "facing": "south"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 0}
+    },
+    {
+      "when": {"north_tube": "true", "facing": "west"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 0}
+    },
+    {
+      "when": {"north_tube": "true", "facing": "east"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 0}
+    },
+    {
+      "when": {"north_tube": "true", "facing": "up"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 0}
+    },
+    {
+      "when": {"north_tube": "true", "facing": "down"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 0}
+    },
+
+
+    {
+      "when": {"south_tube": "true", "facing": "down"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 180}
+    },
+    {
+      "when": {"south_tube": "true", "facing": "north"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 180}
+    },
+    {
+      "when": {"south_tube": "true", "facing": "up"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 180}
+    },
+    {
+      "when": {"south_tube": "true", "facing": "east"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 180}
+    },
+    {
+      "when": {"south_tube": "true", "facing": "west"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 180}
+    },
+
+
+    {
+      "when": {"west_tube": "true", "facing": "east"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 270}
+    },
+    {
+      "when": {"west_tube": "true", "facing": "up"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 270}
+    },
+    {
+      "when": {"west_tube": "true", "facing": "down"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 270}
+    },
+    {
+      "when": {"west_tube": "true", "facing": "south"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 270}
+    },
+    {
+      "when": {"west_tube": "true", "facing": "north"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 270}
+    },
+
+
+    {
+      "when": {"east_tube": "true", "facing": "west"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 90}
+    },
+    {
+      "when": {"east_tube": "true", "facing": "up"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 90}
+    },
+    {
+      "when": {"east_tube": "true", "facing": "down"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 90}
+    },
+    {
+      "when": {"east_tube": "true", "facing": "south"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 90}
+    },
+    {
+      "when": {"east_tube": "true", "facing": "north"},
+      "apply": {"model": "themod:block/soul_tube_addition", "y": 90}
+    }
+  ]
+}

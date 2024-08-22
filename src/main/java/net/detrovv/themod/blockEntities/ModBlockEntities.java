@@ -25,6 +25,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("soul_altar_block_entity", () -> BlockEntityType.Builder.of(
                     SoulAltarBlockEntity::new, ModBlocks.SOUL_ALTAR_BLOCK.get()).build(null));
 
+    public static final Supplier<BlockEntityType<SoulTubeBlockEntity>> SOUL_TUBE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("soul_tube_block_entity", () -> BlockEntityType.Builder.of(
+                    SoulTubeBlockEntity::new, ModBlocks.SOUL_TUBE.get()).build(null));
+
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

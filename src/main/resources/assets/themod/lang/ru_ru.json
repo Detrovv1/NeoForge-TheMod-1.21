@@ -15,6 +15,7 @@
   "block.themod.soul_concrete_powder_block": "Цемент бетона душ",
   "block.themod.soul_altar_block": "Алтарь души",
   "block.themod.base_soul_storage_block": "Стандартная тюрьма душ",
+  "block.themod.soul_tube": "Труба душ",
 
   "soul_storage": "Хранилище душ",
   "gui.themod.soul_storage_screen_insert_button": "Поместить",

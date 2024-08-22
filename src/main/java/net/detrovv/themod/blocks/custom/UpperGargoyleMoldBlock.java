@@ -36,8 +36,8 @@ public class UpperGargoyleMoldBlock extends Block implements EntityBlock
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(MOLD_STATE);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(MOLD_STATE);
     }
 
     @Nullable
