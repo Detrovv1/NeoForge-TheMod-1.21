@@ -5,9 +5,8 @@ import java.util.*;
 
 public class MobToSoulTranslator
 {
-    public Map<EntityType, SoulData> origins = new HashMap<>();
-
-    public MobToSoulTranslator()
+    public static Map<EntityType, SoulData> origins = new HashMap<>();
+    static
     {
         origins.put(EntityType.SKELETON, new SoulData(SoulOrigins.Undead, 1, 1));
         origins.put(EntityType.STRAY, new SoulData(SoulOrigins.Undead, 1, 1));
@@ -52,6 +51,10 @@ public class MobToSoulTranslator
         origins.put(EntityType.MAGMA_CUBE, new SoulData(SoulOrigins.Elemental, 2, 3));
         origins.put(EntityType.GUARDIAN, new SoulData(SoulOrigins.Elemental, 15, 25));
         origins.put(EntityType.ELDER_GUARDIAN, new SoulData(SoulOrigins.Elemental, 40, 60));
+    }
+
+    public MobToSoulTranslator()
+    {
 
     }
 

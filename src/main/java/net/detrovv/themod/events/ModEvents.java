@@ -5,12 +5,9 @@ import net.detrovv.themod.blockEntities.SoulAltarBlockEntity;
 import net.detrovv.themod.blocks.ModBlocks;
 import net.detrovv.themod.effect.ModEffects;
 import net.detrovv.themod.items.ModItems;
-import net.detrovv.themod.screen.SoulStorageScreen;
 import net.detrovv.themod.souls.MobToSoulTranslator;
 import net.detrovv.themod.souls.Soul;
 import net.detrovv.themod.souls.SoulData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,18 +19,14 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ContainerScreenEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.concurrent.Executors;
@@ -157,6 +150,5 @@ public class ModEvents
             }
         }
     }
-
 }
 

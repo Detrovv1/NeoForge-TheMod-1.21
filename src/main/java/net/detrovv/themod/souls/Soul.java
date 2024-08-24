@@ -12,15 +12,13 @@ public class Soul implements INBTSerializable
     private SoulOrigins origin;
     private int soulPower;
 
-    public Soul(){
-
-    }
+    public Soul(){}
 
     public Soul(SoulData data)
     {
         Random rand = new Random();
-        soulPower = rand.nextInt(data.minPower, data.maxPower);
-        origin = data.origin;
+        soulPower = rand.nextInt(data.minPower(), data.maxPower() + 1);
+        origin = data.origin();
     }
 
     public Soul(SoulOrigins pOrigin, int pSoulPower)
@@ -49,7 +47,8 @@ public class Soul implements INBTSerializable
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, Tag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, Tag tag)
+    {
         CompoundTag compoundTag = (CompoundTag)tag;
         this.origin = SoulOrigins.valueOf(compoundTag.getString("soulOrigin"));
         this.soulPower = compoundTag.getInt("soulPower");
