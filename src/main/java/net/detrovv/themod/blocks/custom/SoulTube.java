@@ -6,6 +6,9 @@ import net.detrovv.themod.blockEntities.UpperGargoyleMoldBlockEntity;
 import net.detrovv.themod.blocks.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -61,6 +65,20 @@ public class SoulTube extends Block implements EntityBlock
         SoulTubeBlockEntity entity = (SoulTubeBlockEntity)level.getBlockEntity(pos);
         entity.updateProperties();
     }
+
+//    @Override
+//    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+//        if (!level.isClientSide())
+//        {
+//            SoulTubeBlockEntity entity = (SoulTubeBlockEntity)level.getBlockEntity(pos);
+//            for (SoulGiver giver : entity.getSoulSources())
+//            {
+//                player.sendSystemMessage(Component.literal(giver.toString()));
+//            }
+//            return InteractionResult.SUCCESS;
+//        }
+//        return InteractionResult.CONSUME;
+//    }
 
     @Override
     protected RenderShape getRenderShape(BlockState state)
@@ -121,6 +139,28 @@ public class SoulTube extends Block implements EntityBlock
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pType)
     {
         return pLevel.isClientSide() ? null : (level0, pos0, state0, blockEntity) -> ((SoulTubeBlockEntity)blockEntity).tick();
+    }
+
+    public static BlockPos getNeighborPositionInDirection(BlockPos position, Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.UP -> {return position.above();}
+            case Direction.DOWN -> {return position.below();}
+            case Direction.SOUTH -> {return position.south();}
+            case Direction.NORTH -> {return position.north();}
+            case Direction.WEST -> {return position.west();}
+            case Direction.EAST -> {return position.east();}
+        }
+        return BlockPos.ZERO;
+    }
+
+    public static boolean isTubeFacingBlock(BlockState tubeState, BlockPos tubePos, BlockPos blockPos)
+    {
+        Direction tubeDirection = tubeState.getValue(SoulTube.FACING);
+        BlockPos targetPosition = getNeighborPositionInDirection(tubePos, tubeDirection);
+
+        return targetPosition.equals(blockPos);
     }
 
     public static VoxelShape getVoxelShapeForTubeAdditions(Level level, BlockPos blockPos)

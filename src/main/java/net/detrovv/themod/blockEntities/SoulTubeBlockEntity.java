@@ -1,6 +1,7 @@
 package net.detrovv.themod.blockEntities;
 
 import net.detrovv.themod.blocks.ModBlocks;
+import net.detrovv.themod.blocks.custom.SoulGiver;
 import net.detrovv.themod.blocks.custom.SoulReciever;
 import net.detrovv.themod.blocks.custom.SoulTube;
 import net.minecraft.core.BlockPos;
@@ -12,11 +13,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
 {
     public VoxelShape shape;
+    private Set<SoulGiver> soulSources = new HashSet<>();
 
     public SoulTubeBlockEntity(BlockPos pos, BlockState blockState)
     {
@@ -24,6 +28,77 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
 
         Direction direction = blockState.getValue(SoulTube.FACING);
         shape = SoulTube.getVoxelShape(direction);
+    }
+
+    public Set<SoulGiver> getSoulSources()
+    {
+        Set<SoulGiver> soulSources = new HashSet<>();
+        Level level = getLevel();
+        BlockPos thisPosition = getBlockPos();
+        BlockState thisState = level.getBlockState(thisPosition);
+
+        for (SoulGiver giver : getBehindTubeSoulSources(thisPosition))
+        {
+            soulSources.add(giver);
+        }
+        for (SoulGiver giver : getAroundTubesSoulSources(thisPosition))
+        {
+            soulSources.add(giver);
+        }
+
+        return soulSources;
+    }
+
+    private Set<SoulGiver> getBehindTubeSoulSources(BlockPos position)
+    {
+        Set<SoulGiver> sources = new HashSet<>();
+        Level level = getLevel();
+        BlockState state = level.getBlockState(position);
+        Direction facing = state.getValue(SoulTube.FACING);
+        BlockPos behindPosition = SoulTube.getNeighborPositionInDirection(position, facing.getOpposite());
+        BlockEntity behindBlockEntity = level.getBlockEntity(behindPosition);
+
+        if (behindBlockEntity instanceof SoulGiver soulGiver)
+        {
+            sources.add(soulGiver);
+        }
+
+        if (behindBlockEntity instanceof SoulTubeBlockEntity behindTube)
+        {
+            for (SoulGiver source : behindTube.getSoulSources())
+            {
+                sources.add(source);
+            }
+        }
+
+        return sources;
+    }
+
+    private Set<SoulGiver> getAroundTubesSoulSources(BlockPos position)
+    {
+        Set<SoulGiver> sources = new HashSet<>();
+        Level level = getLevel();
+        List<Direction> directions = SoulTube.getDirectionsInRightOrder();
+
+        for (int i = 0; i < 6; i++)
+        {
+            BlockPos neighborInDirection = SoulTube.getNeighborPositionInDirection(position, directions.get(i));
+            BlockEntity neighborEntity = level.getBlockEntity(neighborInDirection);
+
+            if (neighborEntity instanceof SoulTubeBlockEntity soulTube)
+            {
+                BlockState tubeState = level.getBlockState(neighborInDirection);
+                if (SoulTube.isTubeFacingBlock(tubeState, neighborInDirection, position))
+                {
+                    for (SoulGiver source : soulTube.getSoulSources())
+                    {
+                        sources.add(source);
+                    }
+                }
+            }
+        }
+
+        return sources;
     }
 
     public void tick()

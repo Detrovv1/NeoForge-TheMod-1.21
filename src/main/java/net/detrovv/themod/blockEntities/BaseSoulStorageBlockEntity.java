@@ -8,4 +8,6 @@ public class BaseSoulStorageBlockEntity extends AbstractSoulStorageBlockEntity
     public BaseSoulStorageBlockEntity(BlockPos pos, BlockState state) {
         super(10, ModBlockEntities.BASE_SOUL_STORAGE_BLOCK_ENTITY.get(), pos, state);
     }
+
+
 }
