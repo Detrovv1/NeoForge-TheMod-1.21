@@ -2,14 +2,12 @@ package net.detrovv.themod.toServer;
 
 import io.netty.buffer.ByteBuf;
 import net.detrovv.themod.TheMod;
-import net.detrovv.themod.gui.SoulStorageMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.function.IntFunction;
 

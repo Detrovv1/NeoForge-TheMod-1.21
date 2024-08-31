@@ -94,7 +94,14 @@ public class SoulStorageScreen extends AbstractContainerScreen<SoulStorageMenu>
 
     private void handleExtractButton(Button button)
     {
-
+//        if (selectedSoulButton != null)
+//        {
+//            Soul soul = selectedSoulButton.soul;
+//            if (this.menu.blockEntity.containsSoul(soul))
+//            {
+//                this.menu.blockEntity.removeSoul(soul);
+//            }
+//        }
     }
 
     private void fillSoulButtons()
@@ -144,7 +151,7 @@ public class SoulStorageScreen extends AbstractContainerScreen<SoulStorageMenu>
         {
             this.removeWidget(button);
         }
-        soulButtons = new ArrayList<SoulButton>();
+        soulButtons = new ArrayList<>();
     }
 
     @Override

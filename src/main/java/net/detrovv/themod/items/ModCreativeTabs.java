@@ -33,7 +33,9 @@ public class ModCreativeTabs
                         output.accept(ModBlocks.BASE_SOUL_STORAGE_BLOCK.get());
                         output.accept(ModBlocks.SOUL_ALTAR_BLOCK.get());
                         output.accept(ModBlocks.SOUL_TUBE.get());
-
+                        output.accept(ModBlocks.ETHER_FOCUSER.get());
+                        output.accept(ModBlocks.ETHER_INFUSION_TABLE.get());
+                        output.accept(ModBlocks.ETHER_RECIEVER.get());
                     })
                     .build());
 }

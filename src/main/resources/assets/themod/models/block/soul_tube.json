@@ -58,5 +58,6 @@
 			"rotation": [-150, 30, 0],
 			"translation": [1.5, 1.5, 0]
 		}
-	}
+	},
+	"ambientocclusion": "false"
 }

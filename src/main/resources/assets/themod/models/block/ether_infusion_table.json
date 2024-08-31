@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures":
+  {
+    "up": "themod:block/ether_infusion_table/top",
+    "down": "themod:block/ether_infusion_table/top",
+    "north": "#all",
+    "east": "#all",
+    "west": "#all",
+    "south": "#all",
+    "particle": "#all",
+
+    "all": "themod:block/ether_infusion_table/side"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "variants":
+  {
+    "facing=south": { "model": "themod:block/ether_reciever" },
+    "facing=north": { "model": "themod:block/ether_reciever" },
+    "facing=west": { "model": "themod:block/ether_reciever", "y": 90 },
+    "facing=east": { "model": "themod:block/ether_reciever", "y": 90 }
+  }
+}

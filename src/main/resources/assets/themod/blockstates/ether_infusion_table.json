@@ -1,0 +1,9 @@
+{
+  "variants":
+  {
+    "":
+    {
+      "model": "themod:block/ether_infusion_table"
+    }
+  }
+}

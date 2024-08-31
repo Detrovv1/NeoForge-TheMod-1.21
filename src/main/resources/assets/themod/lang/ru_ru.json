@@ -4,8 +4,6 @@
   "language.code": "ru_ru",
   "author": "detrovv",
 
-  "item.themod.first": "Первый предмет",
-  "item.themod.soul": "Душа",
   "item.themod.bucket_of_soul_concrete_mortar": "Ведро раствора бетона душ",
   "item.themod.executioners_axe": "Топор палача",
 
@@ -16,6 +14,9 @@
   "block.themod.soul_altar_block": "Алтарь души",
   "block.themod.base_soul_storage_block": "Стандартная тюрьма душ",
   "block.themod.soul_tube": "Труба душ",
+  "block.themod.ether_focuser": "Эфирный фокусировщик",
+  "block.themod.ether_infusion_table": "Стол наполнения эфиром",
+  "block.themod.ether_reciever": "Эфирный приемник'",
 
   "soul_storage": "Хранилище душ",
   "gui.themod.soul_storage_screen_insert_button": "Поместить",

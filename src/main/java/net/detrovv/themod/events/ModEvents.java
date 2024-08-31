@@ -29,6 +29,7 @@ import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -91,6 +92,12 @@ public class ModEvents
     {
         LivingEntity livingEntity = event.getEntity();
         HolderSet<EntityType<?>> illagers = BuiltInRegistries.ENTITY_TYPE.getOrCreateTag(EntityTypeTags.ILLAGER);
+
+        if (event.getEntity().level().isClientSide())
+        {
+            return;
+        }
+
         if (livingEntity.getType().is(illagers))
         {
             Mob mob = (Mob)livingEntity;
@@ -122,30 +129,24 @@ public class ModEvents
             return;
         }
 
-        int thisX = mobPosition.getX();
-        int thisY = mobPosition.getY() + 1;
-        int thisZ = mobPosition.getZ();
-        int range = 5;
+        int x = mobPosition.getX();
+        int y = mobPosition.getY() + 1;
+        int z = mobPosition.getZ();
+        int range = SoulAltarBlockEntity.soulCatchRange;
 
-        for (int x = thisX - range; x <= thisX + range; x++)
+        List<BlockPos> blocks = SoulAltarBlockEntity.getBlocksInRangeAroundBlock(new BlockPos(x, y, z), range);
+
+        for (BlockPos block : blocks)
         {
-            for (int y = thisY - range; y <= thisY + range; y++)
+            if (level.getBlockState(block).getBlock() == ModBlocks.SOUL_ALTAR_BLOCK.get())
             {
-                for (int z = thisZ - range; z <= thisZ + range; z++)
+                SoulAltarBlockEntity altar = (SoulAltarBlockEntity)level.getBlockEntity(block);
+                if (altar.hasEmptySoulStorageNearby())
                 {
-                    BlockPos currentPosition = new BlockPos(x, y, z);
-                    if (level.getBlockState(currentPosition).getBlock() == ModBlocks.SOUL_ALTAR_BLOCK.get())
-                    {
-                        SoulAltarBlockEntity altar = (SoulAltarBlockEntity)level.getBlockEntity(currentPosition);
-                        if (altar.HasEmptySoulStorageNearby())
-                        {
-                            MobToSoulTranslator translator = new MobToSoulTranslator();
-                            SoulData soulData = translator.translate(mob.getType());
-                            Soul soul = new Soul(soulData);
-                            altar.StoreSoulInStorageNearby(soul);
-                            return;
-                        }
-                    }
+                    SoulData soulData = MobToSoulTranslator.translate(mob.getType());
+                    Soul soul = new Soul(soulData);
+                    altar.storeSoulInStorageNearby(soul);
+                    return;
                 }
             }
         }

@@ -1,6 +1,5 @@
 package net.detrovv.themod.blocks.custom;
 
-import net.detrovv.themod.blockEntities.BaseSoulStorageBlockEntity;
 import net.detrovv.themod.blockEntities.SoulAltarBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -29,7 +28,7 @@ public class SoulAltar extends Block implements EntityBlock
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         SoulAltarBlockEntity blockEntity = (SoulAltarBlockEntity)level.getBlockEntity(pos);
-        player.sendSystemMessage(Component.literal( blockEntity.HasEmptySoulStorageNearby() + " пустые хранилища"));
+        player.sendSystemMessage(Component.literal( blockEntity.hasEmptySoulStorageNearby() + " пустые хранилища"));
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 

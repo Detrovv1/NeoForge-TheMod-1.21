@@ -58,7 +58,7 @@ public class MobToSoulTranslator
 
     }
 
-    public SoulData translate(EntityType entity)
+    public static SoulData translate(EntityType entity)
     {
         return origins.get(entity);
     }

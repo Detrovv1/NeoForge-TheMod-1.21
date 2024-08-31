@@ -1,11 +1,8 @@
 package net.detrovv.themod.blocks;
 
 import net.detrovv.themod.TheMod;
-import net.detrovv.themod.blocks.custom.SoulAltar;
+import net.detrovv.themod.blocks.custom.*;
 import net.detrovv.themod.blocks.custom.SoulStorages.BaseSoulStorageBlock;
-import net.detrovv.themod.blocks.custom.LowerGargoyleMoldBlock;
-import net.detrovv.themod.blocks.custom.SoulTube;
-import net.detrovv.themod.blocks.custom.UpperGargoyleMoldBlock;
 import net.detrovv.themod.items.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,11 +19,7 @@ import java.util.function.Supplier;
 public class ModBlocks
 {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(TheMod.MOD_ID);
-
-    public static void register(IEventBus eventBus)
-    {
-        BLOCKS.register(eventBus);
-    }
+    
 
     public static final DeferredBlock<Block> LOWER_GARGOYLE_MOLD_BLOCK =
             registerBlock("lower_gargoyle_mold_block", () -> new LowerGargoyleMoldBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE)));
@@ -49,13 +42,25 @@ public class ModBlocks
     public static final DeferredBlock<Block> SOUL_TUBE =
             registerBlock("soul_tube", () -> new SoulTube(Blocks.COPPER_BLOCK.properties()));
 
+    public static final DeferredBlock<Block> ETHER_FOCUSER =
+            registerBlock("ether_focuser", () -> new EtherFocuser(Blocks.LODESTONE.properties()));
 
-    public static final DeferredBlock<Block> registerBlock(String name, Supplier<Block> block)
+    public static final DeferredBlock<Block> ETHER_INFUSION_TABLE =
+            registerBlock("ether_infusion_table", () -> new EtherInfusionTable(Blocks.ENCHANTING_TABLE.properties()));
+
+    public static final DeferredBlock<Block> ETHER_RECIEVER =
+            registerBlock("ether_reciever", () -> new EtherReciever(Blocks.ENCHANTING_TABLE.properties()));
+
+
+    public static DeferredBlock<Block> registerBlock(String name, Supplier<Block> block)
     {
         DeferredBlock<Block> blockReg = BLOCKS.register(name, block);
         ModItems.ITEMS.register(name, () -> new BlockItem(blockReg.get(), new Item.Properties()));
         return blockReg;
     }
 
-
+    public static void register(IEventBus eventBus)
+    {
+        BLOCKS.register(eventBus);
+    }
 }

@@ -1,7 +1,6 @@
 package net.detrovv.themod.blockEntities;
 
 import net.detrovv.themod.blocks.ModBlocks;
-import net.detrovv.themod.blocks.custom.SoulGiver;
 import net.detrovv.themod.blocks.custom.SoulReciever;
 import net.detrovv.themod.blocks.custom.SoulTube;
 import net.minecraft.core.BlockPos;
@@ -20,7 +19,6 @@ import java.util.Set;
 public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
 {
     public VoxelShape shape;
-    private Set<SoulGiver> soulSources = new HashSet<>();
 
     public SoulTubeBlockEntity(BlockPos pos, BlockState blockState)
     {
@@ -30,75 +28,68 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
         shape = SoulTube.getVoxelShape(direction);
     }
 
-    public Set<SoulGiver> getSoulSources()
+    public Set<AbstractSoulStorageBlockEntity> getSoulSources(Set<BlockPos> checkedPositions)
     {
-        Set<SoulGiver> soulSources = new HashSet<>();
-        Level level = getLevel();
+        Set<AbstractSoulStorageBlockEntity> soulSources = new HashSet<>();
         BlockPos thisPosition = getBlockPos();
-        BlockState thisState = level.getBlockState(thisPosition);
 
-        for (SoulGiver giver : getBehindTubeSoulSources(thisPosition))
-        {
-            soulSources.add(giver);
-        }
-        for (SoulGiver giver : getAroundTubesSoulSources(thisPosition))
-        {
-            soulSources.add(giver);
-        }
+        soulSources.addAll(getBehindTubeSoulSources(thisPosition, checkedPositions));
+        soulSources.addAll(getAroundTubesSoulSources(thisPosition, checkedPositions));
 
         return soulSources;
     }
 
-    private Set<SoulGiver> getBehindTubeSoulSources(BlockPos position)
+    private Set<AbstractSoulStorageBlockEntity> getBehindTubeSoulSources(BlockPos position, Set<BlockPos> checkedPositions)
     {
-        Set<SoulGiver> sources = new HashSet<>();
+        Set<AbstractSoulStorageBlockEntity> soulSources = new HashSet<>();
         Level level = getLevel();
         BlockState state = level.getBlockState(position);
         Direction facing = state.getValue(SoulTube.FACING);
         BlockPos behindPosition = SoulTube.getNeighborPositionInDirection(position, facing.getOpposite());
         BlockEntity behindBlockEntity = level.getBlockEntity(behindPosition);
 
-        if (behindBlockEntity instanceof SoulGiver soulGiver)
+        if (behindBlockEntity instanceof AbstractSoulStorageBlockEntity soulGiver)
         {
-            sources.add(soulGiver);
+            soulSources.add(soulGiver);
         }
 
         if (behindBlockEntity instanceof SoulTubeBlockEntity behindTube)
         {
-            for (SoulGiver source : behindTube.getSoulSources())
+            if (!checkedPositions.contains(behindPosition))
             {
-                sources.add(source);
+                soulSources.addAll(behindTube.getSoulSources(checkedPositions));
+                checkedPositions.add(behindPosition);
             }
         }
 
-        return sources;
+        return soulSources;
     }
 
-    private Set<SoulGiver> getAroundTubesSoulSources(BlockPos position)
+    private Set<AbstractSoulStorageBlockEntity> getAroundTubesSoulSources(BlockPos position, Set<BlockPos> checkedPositions)
     {
-        Set<SoulGiver> sources = new HashSet<>();
+        Set<AbstractSoulStorageBlockEntity> soulSources = new HashSet<>();
         Level level = getLevel();
-        List<Direction> directions = SoulTube.getDirectionsInRightOrder();
+        List<Direction> directions = SoulTube.DIRECTIONS;
 
         for (int i = 0; i < 6; i++)
         {
             BlockPos neighborInDirection = SoulTube.getNeighborPositionInDirection(position, directions.get(i));
             BlockEntity neighborEntity = level.getBlockEntity(neighborInDirection);
-
-            if (neighborEntity instanceof SoulTubeBlockEntity soulTube)
+            if (!checkedPositions.contains(neighborInDirection))
             {
-                BlockState tubeState = level.getBlockState(neighborInDirection);
-                if (SoulTube.isTubeFacingBlock(tubeState, neighborInDirection, position))
+                if (neighborEntity instanceof SoulTubeBlockEntity soulTube)
                 {
-                    for (SoulGiver source : soulTube.getSoulSources())
+                    BlockState tubeState = level.getBlockState(neighborInDirection);
+                    if (SoulTube.isTubeFacingBlock(tubeState, neighborInDirection, position))
                     {
-                        sources.add(source);
+                        soulSources.addAll(soulTube.getSoulSources(checkedPositions));
                     }
                 }
+                checkedPositions.add(neighborInDirection);
             }
         }
 
-        return sources;
+        return soulSources;
     }
 
     public void tick()
@@ -112,14 +103,14 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
         {
             List<Boolean> connections = getDirectionMaskForTubeAdditions();
             BlockState state = level.getBlockState(getBlockPos());
-            BlockState copy = state;
+            BlockState stateBeforeUpdate = state;
 
             for (int i = 0; i < 6; i++)
             {
                 state = state.setValue(SoulTube.DIRECTION_TUBES.get(i), connections.get(i));
             }
 
-            if (state != copy)
+            if (state != stateBeforeUpdate)
             {
                 level.setBlock(getBlockPos(), state, Block.UPDATE_ALL);
             }
@@ -129,17 +120,17 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
     private List<Boolean> getDirectionMaskForTubeAdditions()
     {
         Level level = getLevel();
-        BlockPos position = getBlockPos();
+        BlockPos thisPosition = getBlockPos();
         List<Boolean> directionMask = new ArrayList<>();
-        List<Boolean> connectorsNearby = getTubeConnectorsNearby(level, position);
-        List<Direction> directions = SoulTube.getDirectionsInRightOrder();
-        BlockState thisState = level.getBlockState(position);
+        List<Boolean> connectorsNearby = getTubeConnectorsNearby(level, thisPosition);
+        List<Direction> directions = SoulTube.DIRECTIONS;
+        BlockState thisState = level.getBlockState(thisPosition);
 
         for (int i = 0; i < 6; i++)
         {
             if (connectorsNearby.get(i) == true)
             {
-                BlockPos connectorPosition = position.relative(directions.get(i));
+                BlockPos connectorPosition = thisPosition.relative(directions.get(i));
                 BlockState connectorState = level.getBlockState(connectorPosition);
 
                 directionMask.add(checkConnector(thisState, connectorState, i));
@@ -154,13 +145,13 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
     public static List<Boolean> getTubeConnectorsNearby(Level level, BlockPos thisPosition)
     {
         List<BlockPos> neighborBlocks = SoulTube.getNeighborPositions(thisPosition);
-        List<Boolean> tubeConnectors = new ArrayList<Boolean>();
+        List<Boolean> tubeConnectors = new ArrayList<>();
 
-        for (BlockPos block : neighborBlocks)
+        for (BlockPos neighborBlock : neighborBlocks)
         {
-            BlockEntity blockEntity = level.getBlockEntity(block);
+            BlockEntity neighborBlockEntity = level.getBlockEntity(neighborBlock);
 
-            tubeConnectors.add(blockEntity instanceof SoulReciever);
+            tubeConnectors.add(neighborBlockEntity instanceof SoulReciever);
         }
 
         return tubeConnectors;
@@ -168,7 +159,7 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
 
     private boolean checkConnector(BlockState thisState, BlockState connectorState, int DirectionCode)
     {
-        List<Direction> directions = SoulTube.getDirectionsInRightOrder();
+        List<Direction> directions = SoulTube.DIRECTIONS;
         Direction thisFacing = thisState.getValue(SoulTube.FACING);
 
         // if connector behind tube
@@ -189,7 +180,7 @@ public class SoulTubeBlockEntity extends BlockEntity implements SoulReciever
 
     private boolean isTubesNotParallel(Direction facingOne, Direction facingTwo, int directionCode)
     {
-        List<Direction> directions = SoulTube.getDirectionsInRightOrder();
+        List<Direction> directions = SoulTube.DIRECTIONS;
 
         return (facingOne != directions.get(directionCode) &&
                 facingOne != directions.get(directionCode).getOpposite() &&

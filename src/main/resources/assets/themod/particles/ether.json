@@ -1,0 +1,9 @@
+{
+  "textures":
+  [
+    "themod:ether/overworld/ether_particle_0",
+    "themod:ether/overworld/ether_particle_1",
+    "themod:ether/overworld/ether_particle_2",
+    "themod:ether/overworld/ether_particle_3"
+  ]
+}

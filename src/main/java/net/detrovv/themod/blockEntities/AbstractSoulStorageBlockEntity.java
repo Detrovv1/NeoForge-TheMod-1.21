@@ -1,6 +1,5 @@
 package net.detrovv.themod.blockEntities;
 
-import net.detrovv.themod.blocks.custom.SoulGiver;
 import net.detrovv.themod.blocks.custom.SoulReciever;
 import net.detrovv.themod.blocks.custom.SoulTube;
 import net.detrovv.themod.gui.SoulStorageMenu;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
@@ -33,12 +31,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbstractSoulStorageBlockEntity extends BlockEntity implements MenuProvider, SoulReciever, SoulGiver
+public abstract class AbstractSoulStorageBlockEntity extends BlockEntity implements MenuProvider, SoulReciever
 {
     protected final int capacity;
     protected List<Soul> storedSouls = new ArrayList<Soul>();
     protected ItemStackHandler remoteSoulStorage = new ItemStackHandler(1);
-    protected Set<SoulGiver> soulSources = new HashSet<>();
+    protected Set<AbstractSoulStorageBlockEntity> soulSources = new HashSet<>();
     protected int counterForTicks = 0;
 
     public AbstractSoulStorageBlockEntity(int capacity, BlockEntityType<?> type, BlockPos pos, BlockState state)
@@ -49,6 +47,7 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
 
     public boolean addSoul(Soul soul)
     {
+        Level level = getLevel();
         if (!level.isClientSide() && hasFreeSpaceForSoul())
         {
             storedSouls.add(soul);
@@ -87,40 +86,43 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
         return false;
     }
 
-    public boolean hasSoulOfType(SoulOrigins origin, int power)
+    @Nullable
+    public Soul hasSoulOfType(SoulOrigins origin, int power)
     {
         for (Soul soul : storedSouls)
         {
             if (soul.getPower() >= power && soul.getOrigin() == origin)
             {
-                return true;
+                return soul;
             }
         }
-        return false;
+        return null;
     }
 
-    public boolean hasSoulOfType(SoulOrigins origin)
+    @Nullable
+    public Soul hasSoulOfType(SoulOrigins origin)
     {
         for (Soul soul : storedSouls)
         {
             if (soul.getOrigin() == origin)
             {
-                return true;
+                return soul;
             }
         }
-        return false;
+        return null;
     }
 
-    public boolean hasSoulOfType(int power)
+    @Nullable
+    public Soul hasSoulOfType(int power)
     {
         for (Soul soul : storedSouls)
         {
             if (soul.getPower() >= power)
             {
-                return true;
+                return soul;
             }
         }
-        return false;
+        return null;
     }
 
     public List<Soul> getSouls()
@@ -217,9 +219,7 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
         super.onDataPacket(net, pkt, lookupProvider);
         this.loadAdditional(pkt.getTag(), lookupProvider);
     }
-
-
-
+    
     public void tick()
     {
         Level level = getLevel();
@@ -237,7 +237,7 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
     private void tryToTakeSoulFromSource()
     {
         updateIncomingTubes();
-        for (SoulGiver giver : soulSources)
+        for (AbstractSoulStorageBlockEntity giver : soulSources)
         {
             if (giver instanceof AbstractSoulStorageBlockEntity storage)
             {
@@ -258,15 +258,17 @@ public abstract class AbstractSoulStorageBlockEntity extends BlockEntity impleme
     {
         Level level = getLevel();
         BlockPos thisPosition = getBlockPos();
-        Set<SoulGiver> soulGivers = new HashSet<>();
+        Set<AbstractSoulStorageBlockEntity> soulGivers = new HashSet<>();
         List<BlockPos> neighborBlocks = SoulTube.getNeighborPositions(thisPosition);
+        Set<BlockPos> checkedPositions = new HashSet<>();
+
         for (BlockPos blockPos : neighborBlocks)
         {
             if (level.getBlockEntity(blockPos) instanceof SoulTubeBlockEntity soulTube)
             {
                 if (SoulTube.isTubeFacingBlock(level.getBlockState(blockPos), blockPos, thisPosition))
                 {
-                    for (SoulGiver giver : soulTube.getSoulSources())
+                    for (AbstractSoulStorageBlockEntity giver : soulTube.getSoulSources(checkedPositions))
                     {
                         soulGivers.add(giver);
                     }

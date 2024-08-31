@@ -8,8 +8,11 @@ import net.detrovv.themod.gui.ModMenus;
 import net.detrovv.themod.items.ModCreativeTabs;
 import net.detrovv.themod.items.ModItems;
 import net.detrovv.themod.network.PacketHandler;
+import net.detrovv.themod.particles.EtherParticleProvider;
+import net.detrovv.themod.particles.ModParticles;
 import net.detrovv.themod.screen.SoulStorageScreen;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.slf4j.Logger;
 
@@ -59,6 +62,8 @@ public class TheMod
         ModAttachments.register(modEventBus);
 
         ModMenus.register(modEventBus);
+
+        ModParticles.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -81,12 +86,19 @@ public class TheMod
     public static class ClientModEvents
     {
         @SubscribeEvent
-        public static void onClientSetup(RegisterMenuScreensEvent event) {
+        public static void onClientSetup(RegisterMenuScreensEvent event)
+        {
             event.register(ModMenus.SOUL_STORAGE_MENU.get(), SoulStorageScreen::new);
         }
         @SubscribeEvent
-        public static void packetHandlerRegistration(RegisterPayloadHandlersEvent event) {
-           PacketHandler.register(event);
+        public static void packetHandlerRegistration(RegisterPayloadHandlersEvent event)
+        {
+            PacketHandler.register(event);
+        }
+        @SubscribeEvent
+        public static void registerParticleProviders(RegisterParticleProvidersEvent event)
+        {
+            event.registerSpriteSet(ModParticles.ETHER.get(), EtherParticleProvider::new);
         }
     }
 }

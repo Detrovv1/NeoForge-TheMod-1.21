@@ -13,18 +13,20 @@ import java.util.List;
 
 public class SoulAltarBlockEntity extends BlockEntity
 {
-    private final int range = 1;
+    public static int soulCatchRange = 5;
+    public static int soulStoreRange = 1;
 
-    public SoulAltarBlockEntity(BlockPos pos, BlockState blockState) {
+    public SoulAltarBlockEntity(BlockPos pos, BlockState blockState)
+    {
         super(ModBlockEntities.SOUL_ALTAR_BLOCK_ENTITY.get(), pos, blockState);
     }
 
-    public void StoreSoulInStorageNearby(Soul soul)
+    public void storeSoulInStorageNearby(Soul soul)
     {
         Level level = getLevel();
         if (!level.isClientSide())
         {
-            List<BlockPos> soulStoragesNearby = GetSoulStoragesNearby();
+            List<BlockPos> soulStoragesNearby = getSoulStoragesNearby();
 
             for (BlockPos blockPos : soulStoragesNearby)
             {
@@ -38,11 +40,11 @@ public class SoulAltarBlockEntity extends BlockEntity
         }
     }
 
-    public boolean HasEmptySoulStorageNearby()
+    public boolean hasEmptySoulStorageNearby()
     {
         Level level = getLevel();
 
-        List<BlockPos> soulStoragesNearby = GetSoulStoragesNearby();
+        List<BlockPos> soulStoragesNearby = getSoulStoragesNearby();
 
         for (BlockPos blockPos : soulStoragesNearby)
         {
@@ -55,11 +57,11 @@ public class SoulAltarBlockEntity extends BlockEntity
         return false;
     }
 
-    public List<BlockPos> GetSoulStoragesNearby()
+    public List<BlockPos> getSoulStoragesNearby()
     {
-        List<BlockPos> blockPositions = GetBlocksNearby();
+        List<BlockPos> blockPositions = getBlocksInRangeAroundBlock(getBlockPos(), soulStoreRange);
 
-        List<BlockPos> storages = new ArrayList<BlockPos>();
+        List<BlockPos> storages = new ArrayList<>();
 
         for (BlockPos blockPos : blockPositions)
         {
@@ -72,16 +74,13 @@ public class SoulAltarBlockEntity extends BlockEntity
         return storages;
     }
 
-    public List<BlockPos> GetBlocksNearby()
+    public static List<BlockPos> getBlocksInRangeAroundBlock(BlockPos position, int range)
     {
-        BlockPos thisPosition = this.getBlockPos();
-        int thisX = thisPosition.getX();
-        int thisY = thisPosition.getY();
-        int thisZ = thisPosition.getZ();
+        int thisX = position.getX();
+        int thisY = position.getY();
+        int thisZ = position.getZ();
 
-        Level level = getLevel();
-
-        List<BlockPos> blocks = new ArrayList<BlockPos>();
+        List<BlockPos> blocks = new ArrayList<>();
 
         for (int x = thisX - range; x <= thisX + range; x++)
         {

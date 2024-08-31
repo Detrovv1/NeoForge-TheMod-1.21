@@ -1,14 +1,9 @@
 package net.detrovv.themod.blocks.custom;
 
-import net.detrovv.themod.blockEntities.ModBlockEntities;
 import net.detrovv.themod.blockEntities.SoulTubeBlockEntity;
-import net.detrovv.themod.blockEntities.UpperGargoyleMoldBlockEntity;
 import net.detrovv.themod.blocks.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,6 +29,7 @@ public class SoulTube extends Block implements EntityBlock
 {
     public static final DirectionProperty FACING = DirectionProperty.create("facing");
     public static final List<BooleanProperty> DIRECTION_TUBES = new ArrayList<>();
+    public static List<Direction> DIRECTIONS = new ArrayList<>();
     static
     {
         DIRECTION_TUBES.add(BooleanProperty.create("up_tube"));
@@ -43,6 +38,13 @@ public class SoulTube extends Block implements EntityBlock
         DIRECTION_TUBES.add(BooleanProperty.create("north_tube"));
         DIRECTION_TUBES.add(BooleanProperty.create("west_tube"));
         DIRECTION_TUBES.add(BooleanProperty.create("east_tube"));
+
+        DIRECTIONS.add(Direction.UP);
+        DIRECTIONS.add(Direction.DOWN);
+        DIRECTIONS.add(Direction.SOUTH);
+        DIRECTIONS.add(Direction.NORTH);
+        DIRECTIONS.add(Direction.WEST);
+        DIRECTIONS.add(Direction.EAST);
     }
 
     public SoulTube(Properties properties)
@@ -65,20 +67,6 @@ public class SoulTube extends Block implements EntityBlock
         SoulTubeBlockEntity entity = (SoulTubeBlockEntity)level.getBlockEntity(pos);
         entity.updateProperties();
     }
-
-//    @Override
-//    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-//        if (!level.isClientSide())
-//        {
-//            SoulTubeBlockEntity entity = (SoulTubeBlockEntity)level.getBlockEntity(pos);
-//            for (SoulGiver giver : entity.getSoulSources())
-//            {
-//                player.sendSystemMessage(Component.literal(giver.toString()));
-//            }
-//            return InteractionResult.SUCCESS;
-//        }
-//        return InteractionResult.CONSUME;
-//    }
 
     @Override
     protected RenderShape getRenderShape(BlockState state)
@@ -104,6 +92,7 @@ public class SoulTube extends Block implements EntityBlock
     {
         BlockState state = ModBlocks.SOUL_TUBE.get().defaultBlockState();
         Direction direction = context.getClickedFace().getOpposite();
+
         state = state.setValue(FACING, direction);
         VoxelShape shape = getVoxelShape(direction);
         SoulTubeBlockEntity blockEntity = (SoulTubeBlockEntity)context.getLevel().getBlockEntity(context.getClickedPos());
@@ -155,10 +144,19 @@ public class SoulTube extends Block implements EntityBlock
         return BlockPos.ZERO;
     }
 
+    public static BlockPos getNeighborPositionInDirection(BlockPos position, Direction direction, int number)
+    {
+        for (int i = 0; i < number; i++)
+        {
+            position = getNeighborPositionInDirection(position, direction);
+        }
+        return position;
+    }
+
     public static boolean isTubeFacingBlock(BlockState tubeState, BlockPos tubePos, BlockPos blockPos)
     {
-        Direction tubeDirection = tubeState.getValue(SoulTube.FACING);
-        BlockPos targetPosition = getNeighborPositionInDirection(tubePos, tubeDirection);
+        Direction tubeFacing = tubeState.getValue(SoulTube.FACING);
+        BlockPos targetPosition = getNeighborPositionInDirection(tubePos, tubeFacing);
 
         return targetPosition.equals(blockPos);
     }
@@ -172,7 +170,7 @@ public class SoulTube extends Block implements EntityBlock
         {
             if (state.getValue(DIRECTION_TUBES.get(i)))
             {
-                shape = Shapes.or(shape, getVoxelShapeForTubeAddition(getDirectionsInRightOrder().get(i)));
+                shape = Shapes.or(shape, getVoxelShapeForTubeAddition(DIRECTIONS.get(i)));
             }
         }
         return shape;
@@ -206,18 +204,6 @@ public class SoulTube extends Block implements EntityBlock
         return Block.box(6,6,6,12,12,12);
     }
 
-    public static List<Direction> getDirectionsInRightOrder()
-    {
-        List<Direction> directions = new ArrayList<Direction>();
-        directions.add(Direction.UP);
-        directions.add(Direction.DOWN);
-        directions.add(Direction.SOUTH);
-        directions.add(Direction.NORTH);
-        directions.add(Direction.WEST);
-        directions.add(Direction.EAST);
-        return directions;
-    }
-
     public static List<BlockPos> getNeighborPositions(BlockPos position)
     {
         List<BlockPos> blocks = new ArrayList<BlockPos>();
@@ -230,5 +216,19 @@ public class SoulTube extends Block implements EntityBlock
         blocks.add(position.east());
 
         return blocks;
+    }
+
+    public static int getDirectionCode(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.UP: {return 0;}
+            case Direction.DOWN: {return 1;}
+            case Direction.SOUTH: {return 2;}
+            case Direction.NORTH: {return 3;}
+            case Direction.WEST: {return 4;}
+            case Direction.EAST: {return 5;}
+        }
+        throw new IllegalArgumentException("an attempt was made to obtain the wrong direction code");
     }
 }
